@@ -1,6 +1,6 @@
 #!/bin/bash
 # hermes-notify installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/misterstrong/hermes-notify/main/scripts/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/paichato/hermes-notify/main/scripts/install.sh | bash
 
 set -e
 
@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # GitHub repo (override with: HERMES_NOTIFY_REPO=username/repo)
-REPO="${HERMES_NOTIFY_REPO:-misterstrong/hermes-notify}"
+REPO="${HERMES_NOTIFY_REPO:-paichato/hermes-notify}"
 BRANCH="${HERMES_NOTIFY_BRANCH:-main}"
 
 print_header() {
