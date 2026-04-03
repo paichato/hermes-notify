@@ -41,12 +41,16 @@ def print_header() -> None:
 
 def ask(prompt: str, default: str = None) -> str:
     """Ask user for input with default."""
-    if default:
-        response = input(f"  {prompt} [{default}]: ").strip()
-        return response if response else default
-    else:
-        response = input(f"  {prompt}: ").strip()
-        return response
+    try:
+        if default:
+            response = input(f"  {prompt} [{default}]: ").strip()
+            return response if response else default
+        else:
+            response = input(f"  {prompt}: ").strip()
+            return response
+    except EOFError:
+        # Non-interactive mode - use defaults
+        return default if default else ""
 
 
 def ask_choice(prompt: str, choices: list, default: str = None) -> str:
@@ -56,26 +60,34 @@ def ask_choice(prompt: str, choices: list, default: str = None) -> str:
         marker = f" {Colors.GREEN}← default{Colors.END}" if choice == default else ""
         print(f"    {Colors.BOLD}{i}{Colors.END}) {choice}{marker}")
     
-    while True:
-        response = input(f"\n  Your choice [1-{len(choices)}]: ").strip()
-        if not response and default:
-            return default
-        try:
-            idx = int(response) - 1
-            if 0 <= idx < len(choices):
-                return choices[idx]
-        except ValueError:
-            pass
-        cprint(Colors.RED, "  Invalid choice, try again.")
+    try:
+        while True:
+            response = input(f"\n  Your choice [1-{len(choices)}]: ").strip()
+            if not response and default:
+                return default
+            try:
+                idx = int(response) - 1
+                if 0 <= idx < len(choices):
+                    return choices[idx]
+            except ValueError:
+                pass
+            cprint(Colors.RED, "  Invalid choice, try again.")
+    except EOFError:
+        # Non-interactive mode - use default
+        return default if default else choices[0]
 
 
 def ask_yesno(prompt: str, default: bool = True) -> bool:
     """Ask yes/no question."""
-    default_str = "Y/n" if default else "y/N"
-    response = input(f"  {prompt} [{default_str}]: ").strip().lower()
-    if not response:
+    try:
+        default_str = "Y/n" if default else "y/N"
+        response = input(f"  {prompt} [{default_str}]: ").strip().lower()
+        if not response:
+            return default
+        return response in ('y', 'yes')
+    except EOFError:
+        # Non-interactive mode - use default
         return default
-    return response in ('y', 'yes')
 
 
 def print_separator() -> None:
