@@ -17,7 +17,7 @@
 ## Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/misterstrong/hermes-notify/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/paichato/hermes-notify/main/scripts/install.sh | bash
 ```
 
 Or with pip:
