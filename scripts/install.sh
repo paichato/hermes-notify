@@ -11,9 +11,9 @@ CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# GitHub repo
-REPO="misterstrong/hermes-notify"
-BRANCH="main"
+# GitHub repo (override with: HERMES_NOTIFY_REPO=username/repo)
+REPO="${HERMES_NOTIFY_REPO:-misterstrong/hermes-notify}"
+BRANCH="${HERMES_NOTIFY_BRANCH:-main}"
 
 print_header() {
     echo ""
@@ -64,10 +64,16 @@ install_package() {
     echo ""
     echo -e "${CYAN}Installing hermes-notify...${NC}"
     
-    # Try pip install from GitHub
+    # Try pip install from GitHub (with flags for various Python setups)
     $PYTHON -m pip install "git+https://github.com/$REPO.git@$BRANCH" --break-system-packages 2>/dev/null || \
-    $PYTHON -m pip install "git+https://github.com/$REPO.git@$BRANCH" --user || {
+    $PYTHON -m pip install "git+https://github.com/$REPO.git@$BRANCH" --user 2>/dev/null || \
+    $PYTHON -m pip install "git+https://github.com/$REPO.git@$BRANCH" --user --break-system-packages 2>/dev/null || {
         echo -e "${RED}✗ Installation failed${NC}"
+        echo ""
+        echo "Try manually:"
+        echo "  pip install hermes-notify --break-system-packages"
+        echo "  or"
+        echo "  pip install hermes-notify --user"
         exit 1
     }
     
