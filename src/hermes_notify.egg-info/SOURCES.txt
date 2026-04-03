@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+src/hermes_notify/__init__.py
+src/hermes_notify/cli.py
+src/hermes_notify/config.py
+src/hermes_notify/installer.py
+src/hermes_notify/overlay.py
+src/hermes_notify.egg-info/PKG-INFO
+src/hermes_notify.egg-info/SOURCES.txt
+src/hermes_notify.egg-info/dependency_links.txt
+src/hermes_notify.egg-info/entry_points.txt
+src/hermes_notify.egg-info/requires.txt
+src/hermes_notify.egg-info/top_level.txt

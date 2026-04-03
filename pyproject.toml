@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-notify"
+version = "1.0.0"
+description = "Desktop notifications for Hermes AI Agent with audio announcements"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Mister Strong"}
+]
+keywords = ["hermes", "notification", "ai", "agent", "desktop", "macos"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Topic :: Desktop Environment",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+lottie = ["lottie>=0.7"]
+gui = ["pygubu>=0.30"]
+all = ["lottie>=0.7", "pygubu>=0.30"]
+
+[project.scripts]
+hermes-notify = "hermes_notify.cli:main"
+hermes-notify-setup = "hermes_notify.installer:main"
+
+[project.urls]
+Homepage = "https://github.com/misterstrong/hermes-notify"
+Documentation = "https://github.com/misterstrong/hermes-notify#readme"
+Repository = "https://github.com/misterstrong/hermes-notify"
+Issues = "https://github.com/misterstrong/hermes-notify/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]

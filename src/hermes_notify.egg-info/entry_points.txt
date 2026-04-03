@@ -1,0 +1,3 @@
+[console_scripts]
+hermes-notify = hermes_notify.cli:main
+hermes-notify-setup = hermes_notify.installer:main

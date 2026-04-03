@@ -1,0 +1,11 @@
+Pillow>=10.0
+
+[all]
+lottie>=0.7
+pygubu>=0.30
+
+[gui]
+pygubu>=0.30
+
+[lottie]
+lottie>=0.7
