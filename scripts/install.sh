@@ -116,8 +116,13 @@ main() {
     check_pip
     install_package
     
-    # Run setup wizard automatically
-    run_setup
+    # Run setup wizard if terminal is interactive
+    if [ -t 0 ]; then
+        run_setup
+    else
+        echo ""
+        echo -e "${YELLOW}Tip: Run 'hermes-notify-setup' to configure.${NC}"
+    fi
     
     print_success
 }
