@@ -187,40 +187,89 @@ def install_prompt_integration() -> None:
         return
     
     integration_code = '''
-# hermes-notify prompt integration
-# Add /ntf at end of command to show notification
-ntf_wrapper() {
-    local exit_code=$?
-    if [[ "$_ntf_pending" == "1" ]]; then
-        if [[ $exit_code -eq 0 ]]; then
-            hermes-notify "${_ntf_message:-Task complete!}" 2>/dev/null &
-        fi
-        _ntf_pending=0
+# ============================================
+# hermes-notify shell integration
+# ============================================
+
+# Wrapper function that detects /ntf in commands
+hermes_ntf_preexec() {
+    # Store the original command
+    _hermes_cmd="$1"
+    
+    # Check if /ntf is anywhere in the command
+    if [[ "$_hermes_cmd" == *"/ntf"* ]]; then
+        _hermes_notify_pending=1
+        # Remove /ntf from the command
+        _hermes_cmd=$(echo "$_hermes_cmd" | sed 's| /ntf||g' | sed 's|/ntf ||g' | sed 's|/ntf||g')
+    else
+        _hermes_notify_pending=0
     fi
-    return $exit_code
 }
 
-# Alias for quick notification
-alias ntf='_ntf_pending=1; _ntf_message='
+# Post-command hook - notify if /ntf was present and command succeeded
+hermes_ntf_postexec() {
+    local exit_code=$?
+    
+    if [[ "$_hermes_notify_pending" == "1" && $exit_code -eq 0 ]]; then
+        # Show notification with the command name as context
+        local cmd_short=$(echo "$_hermes_cmd" | head -c 30)
+        hermes-notify "Done: $cmd_short" 2>/dev/null &
+    fi
+    
+    _hermes_notify_pending=0
+}
 
-# Preexec hook for zsh
+# For zsh
 if [[ -n "$ZSH_VERSION" ]]; then
     autoload -Uz add-zsh-hook
-    add-zsh-hook precmd ntf_wrapper
+    add-zsh-hook preexec hermes_ntf_preexec
+    add-zsh-hook precmd hermes_ntf_postexec
 fi
 
 # For bash
 if [[ -n "$BASH_VERSION" ]]; then
-    PROMPT_COMMAND="ntf_wrapper;$PROMPT_COMMAND"
+    # Save original PROMPT_COMMAND
+    _hermes_original_prompt_command="$PROMPT_COMMAND"
+    
+    # preexec equivalent for bash
+    _hermes_last_command=""
+    _hermes_preexec() {
+        _hermes_last_command="$1"
+        hermes_ntf_preexec "$1"
+    }
+    
+    # Trap DEBUG for preexec
+    trap '_hermes_preexec "$BASH_COMMAND"' DEBUG
+    
+    # PROMPT_COMMAND for postexec
+    _hermes_prompt_hook() {
+        hermes_ntf_postexec
+        if [[ -n "$_hermes_original_prompt_command" ]]; then
+            eval "$_hermes_original_prompt_command"
+        fi
+    }
+    PROMPT_COMMAND="_hermes_prompt_hook"
 fi
+
+# ============================================
+# Usage:
+#   make build /ntf       # Notifies when build finishes
+#   /ntf npm install      # Notifies when install finishes  
+#   npm /ntf test         # Notifies when test finishes
+# ============================================
 '''
     
     with open(os.path.expanduser(shell_config), 'a') as f:
         f.write(integration_code)
     
-    print(f"✓ Prompt integration added to {shell_config}")
-    print("  Usage: ntf \"my task\" && <your command>")
-    print("  Notification will show if command succeeds.")
+    print(f"✓ Shell integration added to {shell_config}")
+    print()
+    print("  Usage examples:")
+    print("    make build /ntf       # Notifies when build finishes")
+    print("    /ntf npm install      # Notifies when install finishes")
+    print("    npm /ntf test         # Notifies when test finishes")
+    print()
+    print("  Restart your shell or run: source", shell_config)
 
 
 if __name__ == '__main__':

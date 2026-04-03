@@ -150,9 +150,9 @@ def run_setup() -> Dict:
     print()
     cprint(Colors.DIM, "  Choose when you want me to pop up with a notification:\n")
     modes = [
-        'manual  - You explicitly ask me to notify (e.g., hermes-notify "done")',
-        'auto    - I notify automatically after running any command for you',
-        'prompt  - I hook into your shell prompt to notify when commands succeed'
+        'manual  - Add /ntf anywhere in your command to get notified when it finishes',
+        'auto    - Always notify after every command you run',
+        'prompt  - Only notify when a long-running command (>10s) finishes'
     ]
     mode_choice = ask_choice(
         "When should I notify you?",
