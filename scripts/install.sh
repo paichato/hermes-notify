@@ -116,15 +116,8 @@ main() {
     check_pip
     install_package
     
-    # Ask if user wants to run setup
-    echo ""
-    read -p "Run setup wizard now? [Y/n]: " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "${YELLOW}Skipped setup. Run 'hermes-notify-setup' later.${NC}"
-    else
-        run_setup
-    fi
+    # Run setup wizard automatically
+    run_setup
     
     print_success
 }
